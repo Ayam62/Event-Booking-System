@@ -12,7 +12,7 @@ const eventRouter = express.Router();
 
 
 eventRouter.get("/",getAllEvents)
-eventRouter.post("/atteddees/:eventId",isAdmin,protect,getEventAttendees)
+eventRouter.post("/atteddees/:eventId",protect,getEventAttendees)
 eventRouter.get("/filter",getEventsByFilter)
 eventRouter.post("/create",isAdmin,protect,createEvent)
 eventRouter.get("/:id",isAdmin,protect,getEventById)

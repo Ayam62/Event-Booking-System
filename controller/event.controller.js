@@ -5,35 +5,40 @@ import Event from "../models/event.model.js";
 
 
 
-export const createEvent = async (req,res)=>{
-    const {title,description,date,seat,organizer,status}=req.body;
-   // console.log(req.body);
-    try{
-         const price = eventPrices[title];
-          if (!price) {
-            return res.status(400).json({ error: 'Invalid event title' });
-        }
-       // console.log(title,price,description,date,seat,organizer,status);
+export const createEvent = async (req, res) => {
+    try {
+        const { title, price, description, date, seat, status } = req.body;
 
-        const event = new Event ({
-            title,price,description,date,seat,organizer,status,createdBy:req.user._id
-        })
-      // console.log(title,price,description,date,seat,organizer,status);
-       console.log(event);
-       
-        if(!event.title || !event.description || !event.date || !event.organizer){
-            return res.status(400).json({message:"Please fill all the fields"});
+        // Validate required fields
+        if (!title || !price || !description || !date || !seat || !seat.total || !req.user._id) {
+            return res.status(400).json({ message: "Please fill all the required fields" });
         }
+
+        const event = new Event({
+            title,
+            price,
+            description,
+            date,
+            seat: {
+                total: seat.total,
+                booked: 0
+            },
+            organizer: req.user._id, // organizer is the current user
+            status: status || "active"
+        });
+        console.log(event)
+
         await event.save();
-    
+       
         res.status(201).json({
-            message:"Event created successfully",
+            message: "Event created successfully",
             event
-        })
-    }catch(error){
-        res.status (500).json({message:"Error creating event"});
+        });
+    } catch (error) {
+        console.error("Error creating event:", error);
+        res.status(500).json({ message: "Error creating event" });
     }
-}
+};
 
 export const getAllEvents = async (req,res)=>{
     try{

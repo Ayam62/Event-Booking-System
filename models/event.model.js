@@ -9,7 +9,7 @@ const eventSchema = new Schema(
     title: {
       type: String,
       required: true,
-      enum: Object.keys(eventPrices),
+    
     },
     slug: String,
     description: {
